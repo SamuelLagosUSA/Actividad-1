@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/resource.h>
+#include <unistd.h>
+#include <time.h>
+
+unsigned long long factorial_r(int n) {
+    if (n == 0 || n == 1) return 1;
+    return n * factorial_r(n - 1);
+}
+
+unsigned long long factorial_i(int n) {
+    unsigned long long resultado = 1;
+    for (int i = 2; i <= n; i++) {
+        resultado *= i;
+    }
+    return resultado;
+}
+
+long memoria_kb() {
+    struct rusage uso;
+    getrusage(RUSAGE_SELF, &uso);
+    return uso.ru_maxrss;
+}
+
+int main() {
+    int valores[] = {5, 50, 100, 500, 1000};
+    int total_valores = sizeof(valores) / sizeof(valores[0]);
+
+    for (int i = 0; i < total_valores; i++) {
+        int valor = valores[i];
+
+        long mem_ini = memoria_kb();
+        clock_t t_ini_r = clock();
+        unsigned long long res_r = factorial_r(valor);
+        clock_t t_fin_r = clock();
+        long mem_fin = memoria_kb();
+        long mem_r = mem_fin - mem_ini;
+        double tiempo_r = ((double)(t_fin_r - t_ini_r)) / CLOCKS_PER_SEC;
+
+        mem_ini = memoria_kb();
+        clock_t t_ini_i = clock();
+        unsigned long long res_i = factorial_i(valor);
+        clock_t t_fin_i = clock();
+        mem_fin = memoria_kb();
+        long mem_i = mem_fin - mem_ini;
+        double tiempo_i = ((double)(t_fin_i - t_ini_i)) / CLOCKS_PER_SEC;
+
+        printf("Valor: %d\n", valor);
+        printf("  Recursivo: factorial = %llu, Memoria: %ld KB, Tiempo: %f s\n",
+               res_r, mem_r, tiempo_r);
+        printf("  Iterativo: factorial = %llu, Memoria: %ld KB, Tiempo: %f s\n\n",
+               res_i, mem_i, tiempo_i);
+    }
+
+    return 0;
+}
