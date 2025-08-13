@@ -1,4 +1,4 @@
-# Comparaciom de Factorial Recursivo y Iterativo
+# Comparación de Factorial Recursivo y Iterativo
 
 Este proyecto tiene como objetivo comparar el rendimiento y el uso de memoria de dos implementaciones del calculo del factorial de un numero entero positivo:
 
